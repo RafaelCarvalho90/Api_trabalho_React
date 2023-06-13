@@ -44,19 +44,23 @@ public class ProdutoService {
 
 	public Produto cadastrarProduto(Produto produto, MultipartFile foto) {
 
-		produto.setUrl(adicionarImagemUri(produto));
+		
 
 		Categoria categoria = new Categoria();
 		categoria = produto.getCategoria();
 		categoriaRepository.save(categoria);
 
-		produtoRepository.save(produto);
+		
+		Produto produtoSalvo = produtoRepository.save(produto);
+		produto.setUrl(adicionarImagemUri(produtoSalvo));
+		atualizarProduto(produto.getProdutoId(), produto);
+		 
 		fotoService.cadastrarFotoProduto(foto, produto);
 		return produto;
 	}
 
 	private String adicionarImagemUri(Produto produto) {
-		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/produto/{id}/foto")
+		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/produto/" + produto.getProdutoId() + "/foto")
 				.buildAndExpand(produto.getProdutoId()).toUri();
 		produto.setUrl(uri.toString());
 		return produto.getUrl();

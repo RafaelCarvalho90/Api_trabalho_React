@@ -34,8 +34,8 @@ import jakarta.validation.Valid;
 
 @Valid
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/produto")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ProdutoController  {
 
 	@Autowired
@@ -49,8 +49,8 @@ public class ProdutoController  {
 
 
 	@GetMapping("lista/{id}")
-	@SecurityRequirement(name = "Bearer Auth")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+//	@SecurityRequirement(name = "Bearer Auth")
+//	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@Operation(summary= "Encontra produto por id - ADM e USER", description= "Encontrar produto por id")
 	public Produto findId(@PathVariable("id") Integer id) {
 		return produtoService.buscarProdutoId(id);
@@ -79,7 +79,7 @@ public class ProdutoController  {
 //	@SecurityRequirement(name = "Bearer Auth")
 //	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@Operation(summary= "Inserir produtos no banco de dados - ADM e USER", description= "Inserção de produtos no banco de dados")
-	public Produto cadastrarProduto(@RequestParam String email, @RequestPart Produto produto, @RequestParam(value = "foto",required = false) MultipartFile foto) throws MessagingException {
+	public Produto cadastrarProduto(@RequestParam String email, @RequestPart Produto produto, @RequestPart MultipartFile foto) throws MessagingException {
 		emailService.envioEmailProdutoCadastrado(email, produto);
 		return produtoService.cadastrarProduto(produto, foto);
 	}

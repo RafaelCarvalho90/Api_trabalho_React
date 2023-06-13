@@ -40,22 +40,29 @@ public class WebSecurityConfig {
             .csrf(csrf -> csrf.disable())
             .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/**", "/h2-console/**", "/roles/**", "/test/all/**", "/usuario/{id}/foto", "/usuario/inserir/**","/**").permitAll()
-                    .requestMatchers("/api/**", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**").permitAll()//.hasRole("ADMIN")
-                    .requestMatchers("/test/user/**",
-                    		"/itempedido/lista/**", "/itempedido/inserir/**", "/itempedido/atualizar/**", "/itempedido/deletar/**",
-                    		"/produto/lista/**", "/itempedido/inserir/**", "/itempedido/atualizar/**", "/itempedido/deletar/**",
-                    		"/pedido/lista/**", "/pedido/inserir/**", "/pedido/atualizar/**", "/pedido/deletar/**",
-                    		"/usuario/lista/**", "/usuario/inserir/**", "/usuario/atualizar/**", "/usuario/deletar/**",
-                    		"/foto/foto-usuario/**", "/foto/foto-produto/**").permitAll()
-                    .requestMatchers("/test/mod/**").permitAll()
-                    .requestMatchers("/test/admin/**", "/usuario/lista/**", 
-                    		"/categoria/lista/**", "/categoria/inserir/**", "/categoria/atualizar/**", "/categoria/deletar/**",
-                    		"/endereco/lista/**", "/endereco/inserir/**", "/endereco/atualizar/**", "/endereco/deletar/**"
-                    		).permitAll()
-                    .requestMatchers("/**").permitAll()
-                   .anyRequest().authenticated())
+            .authorizeHttpRequests(auth -> auth.requestMatchers("/**").permitAll()
+						/*
+						 * .requestMatchers("/auth/**", "/h2-console/**", "/roles/**", "/test/all/**",
+						 * "/usuario/{id}/foto", "/usuario/inserir/**").permitAll()
+						 * .requestMatchers("/api/**", "/swagger-ui/**", "/v3/api-docs/**",
+						 * "/actuator/**").permitAll()//.hasRole("ADMIN")
+						 * .requestMatchers("/test/user/**", "/itempedido/lista/**",
+						 * "/itempedido/inserir/**", "/itempedido/atualizar/**",
+						 * "/itempedido/deletar/**", "/produto/lista/**", "/itempedido/inserir/**",
+						 * "/itempedido/atualizar/**", "/itempedido/deletar/**", "/pedido/lista/**",
+						 * "/pedido/inserir/**", "/pedido/atualizar/**", "/pedido/deletar/**",
+						 * "/usuario/lista/**", "/usuario/inserir/**", "/usuario/atualizar/**",
+						 * "/usuario/deletar/**", "/foto/foto-usuario/**",
+						 * "/foto/foto-produto/**").hasAnyRole("USER", "ADMIN")
+						 * .requestMatchers("/test/mod/**").hasRole("MODERATOR")
+						 * .requestMatchers("/test/admin/**", "/usuario/lista/**",
+						 * "/categoria/lista/**", "/categoria/inserir/**", "/categoria/atualizar/**",
+						 * "/categoria/deletar/**", "/endereco/lista/**", "/endereco/inserir/**",
+						 * "/endereco/atualizar/**", "/endereco/deletar/**" ).hasRole("ADMIN")
+						 * .requestMatchers("/**").permitAll()
+						 */
+//                    .anyRequest().authenticated()
+                    )
 		;		
 		
 		http.authenticationProvider(authenticationProvider());
@@ -68,7 +75,9 @@ public class WebSecurityConfig {
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList("*"));
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;

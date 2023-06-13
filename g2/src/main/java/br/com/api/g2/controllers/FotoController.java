@@ -31,8 +31,6 @@ public class FotoController {
 	UsuarioService usuarioService;
 
 	@PostMapping("/foto-usuario")
-	@SecurityRequirement(name = "Bearer Auth")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@Operation(summary = "Inserir foto no banco de dados - ADM e USER", description = "Inserção de foto banco de dados - ")
 	public Foto cadastrarFotoUsuario(@RequestBody Usuario usuario, @RequestParam MultipartFile foto)
 			throws MessagingException, IOException {
@@ -41,8 +39,6 @@ public class FotoController {
 	
 	
 	@PostMapping("/foto-produto")
-	@SecurityRequirement(name = "Bearer Auth")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@Operation(summary = "Inserir foto produto no banco de dados - ADM e USER", description = "Inserção de foto produto banco de dados - ")
 	public Foto cadastrarFotoProduto(@RequestBody Produto produto, @RequestParam MultipartFile foto)
 			throws MessagingException {

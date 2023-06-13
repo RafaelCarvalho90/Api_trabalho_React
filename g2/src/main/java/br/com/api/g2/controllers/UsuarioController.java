@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +37,7 @@ import jakarta.validation.Valid;
 @Valid
 @RestController
 @RequestMapping("/usuario")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UsuarioController  {
 
 	@Autowired
@@ -49,16 +51,16 @@ public class UsuarioController  {
 
 
 	@GetMapping("/lista/{id}")
-	@SecurityRequirement(name = "Bearer Auth")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+//	@SecurityRequirement(name = "Bearer Auth")
+//	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@Operation(summary= "Encontra usuario por id - ADM e USER", description= "Encontrar usuario por id")
 	public Usuario findId(@PathVariable("id") Integer id) {
 		return usuarioService.buscarUsuarioId(id);
 	}
 
 	@GetMapping("/lista")
-	@SecurityRequirement(name = "Bearer Auth")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+//	@SecurityRequirement(name = "Bearer Auth")
+//	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@Operation(summary= "Lista todos os usuarios - ADM e USER", description= "Listagem de usuarios - ADMIN")
 	public List<Usuario> findAllId() {
 		return usuarioService.buscarUsuarios();
@@ -74,6 +76,7 @@ public class UsuarioController  {
 		return new ResponseEntity<>(foto.getDados(), headers, HttpStatus.OK);
 	}
 	
+	@Transactional
 	@PostMapping(value = "/inserir",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
 	//@SecurityRequirement(name = "Bearer Auth")
 	//@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
@@ -84,8 +87,8 @@ public class UsuarioController  {
 	}
 
 	@PutMapping("/atualizar/{id}")
-	@SecurityRequirement(name = "Bearer Auth")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+//	@SecurityRequirement(name = "Bearer Auth")
+//	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@Operation(summary= "Atualiza usuario por id - ADM e USER", description= "Atualiza usuario")
 	public UsuarioDTO atualizarUsuario(@PathVariable("id") Integer id, @RequestBody UsuarioDTO usuarioSolicitado) {
 
@@ -93,8 +96,8 @@ public class UsuarioController  {
 	}
 
 	@DeleteMapping("deletar/{id}")
-	@SecurityRequirement(name = "Bearer Auth")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+//	@SecurityRequirement(name = "Bearer Auth")
+//	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@Operation(summary= "Deleta usuario - ADM e USER", description= "Deleta usuario")
 	public void deletarUsuario(@PathVariable("id") Integer id) {
 		usuarioService.deletarUsuario(id);

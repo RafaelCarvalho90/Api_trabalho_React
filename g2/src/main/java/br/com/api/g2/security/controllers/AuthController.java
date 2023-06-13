@@ -6,10 +6,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,9 +32,10 @@ import br.com.api.g2.security.repositories.RoleRepository;
 import br.com.api.g2.security.repositories.UserRepository;
 import br.com.api.g2.security.services.UserDetailsImpl;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -51,8 +54,9 @@ public class AuthController {
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDTO loginRequest) {
-
-		Authentication authentication = authenticationManager.authenticate(
+		
+		try {
+			Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -64,6 +68,11 @@ public class AuthController {
 
 		return ResponseEntity.ok(
 				new JwtResponseDTO(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
+		} catch (AuthenticationException e) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Falha na autenticação");
+	    }
+
+		
 	}
 
 	/*@PostMapping("/signup")
